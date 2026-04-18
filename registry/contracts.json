@@ -1,0 +1,237 @@
+{
+  "$schema": "./contracts.schema.json",
+  "version": "0.0.1",
+  "description": "Polymarket V2 contract registry — addresses + roles + dependency graph, grown tx-by-tx from atlas entries. Every field here must be sourced from either (a) Polymarket's official contract-addresses doc, (b) a Polygonscan verified-source page, or (c) a real on-chain observation in an atlas entry.",
+  "chains": {
+    "polygon": {
+      "chainId": 137,
+      "rpc": {
+        "publicNoKey": ["https://polygon.drpc.org", "https://polygon-bor-rpc.publicnode.com"],
+        "debugTraceSupported": ["https://polygon.drpc.org"]
+      },
+      "explorer": "https://polygonscan.com"
+    }
+  },
+  "contracts": {
+    "CTFExchangeV2": {
+      "address": "0xE111180000d2663C0091e4f400237545B87B996B",
+      "role": "exchange-entry",
+      "category": "polymarket-core",
+      "upgradability": "non-upgradable",
+      "upstream": "contracts/upstream/ctf-exchange-v2",
+      "deployTx": "0xd313453c195344b3eea2d91343fb840e51130ba5562fb9c9eda83fd0f82c6c97",
+      "deployer": "0xca71ea69c54c163d17beb90beb8d001e1eb538a1",
+      "verifiedSource": "polygonscan",
+      "dependsOn": ["pUSD", "USDCe", "CtfCollateralAdapter", "ConditionalTokens", "PolymarketProxyFactory", "GnosisSafeFactory"],
+      "entrypoints": [
+        {
+          "name": "matchOrders",
+          "selector": "0x3c2b4399",
+          "abi": "matchOrders(bytes32,(uint256,address,address,uint256,uint256,uint256,uint8,uint8,uint256,bytes32,bytes32,bytes),(uint256,address,address,uint256,uint256,uint256,uint8,uint8,uint256,bytes32,bytes32,bytes)[],uint256,uint256[],uint256,uint256[])",
+          "gates": ["onlyOperator", "notPaused"]
+        }
+      ],
+      "events": {
+        "OrderFilled":   { "topic0": "0xd543adfd945773f1a62f74f0ee55a5e3b9b1a28262980ba90b1a89f2ea84d8ee", "signature": "OrderFilled(bytes32,address,address,uint8,uint256,uint256,uint256,uint256,bytes32,bytes32)" },
+        "OrdersMatched": { "topic0": "0x174b3811690657c217184f89418266767c87e4805d09680c39fc9c031c0cab7c", "signature": "OrdersMatched(bytes32,address,uint8,uint256,uint256,uint256)" },
+        "FeeCharged":    { "topic0": "0x55bb3cade9d43b798a4fe5ffdd05024b2d7870df53920673bfc7e68047cd0ab1", "signature": "FeeCharged(address,uint256)" }
+      },
+      "readSlots": {
+        "getCollateral":          "pUSD",
+        "getCtfCollateral":       "USDCe",
+        "getCtf":                 "ConditionalTokens",
+        "getOutcomeTokenFactory": "CtfCollateralAdapter",
+        "getFeeReceiver":         "address (unverified at v0.0.1)",
+        "maxFeeRateBps":          "uint256"
+      },
+      "enums": {
+        "SignatureType": { "EOA": 0, "POLY_PROXY": 1, "POLY_GNOSIS_SAFE": 2, "POLY_1271": 3 },
+        "Side":          { "BUY": 0, "SELL": 1 },
+        "MatchType":     { "COMPLEMENTARY": 0, "MINT": 1, "MERGE": 2 }
+      },
+      "orderTypehash": "0xbb86318a2138f5fa8ae32fbe8e659f8fcf13cc6ae4014a707893055433818589",
+      "orderStructFields": [
+        "uint256 salt", "address maker", "address signer", "uint256 tokenId",
+        "uint256 makerAmount", "uint256 takerAmount", "uint8 side", "uint8 signatureType",
+        "uint256 timestamp", "bytes32 metadata", "bytes32 builder", "bytes signature"
+      ],
+      "observedIn": ["entries/0001-ctfexchangev2-mint"]
+    },
+
+    "NegRiskCTFExchangeV2": {
+      "address": "0xe2222d279d744050d28e00520010520000310F59",
+      "role": "exchange-entry",
+      "category": "polymarket-core",
+      "variant": "neg-risk",
+      "dependsOn": ["pUSD", "USDCe", "NegRiskCtfCollateralAdapter", "NegRiskAdapter", "ConditionalTokens"],
+      "observedIn": []
+    },
+
+    "pUSD": {
+      "address": "0xc011a7e12a19f7b1f670d46f03b03f3342e82dfb",
+      "impl_at_block_85671485": "0x6bBCef9f7ef3B6C592c99e0f206a0DE94Ad0925f",
+      "role": "collateral-exchange-side",
+      "category": "polymarket-collateral",
+      "upgradability": "UUPS",
+      "snapshot": "contracts/snapshots/pUSD",
+      "decimals": 6,
+      "symbol": "pUSD",
+      "kind": "ERC20 wrapper over USDC/USDC.e",
+      "dependsOn": ["USDCe", "Vault"],
+      "customEvents": {
+        "Unwrapped": { "topic0": "0x18b42b684d0b621cc609f4d888916e5ed9e934a476259ec1c11ec116f2b9aa7f", "signature": "Unwrapped(address,address,address,uint256)" }
+      },
+      "observedIn": ["entries/0001-ctfexchangev2-mint"]
+    },
+
+    "CollateralOnramp": {
+      "address": "0x93070a847efEf7F70739046A929D47a521F5B8ee",
+      "role": "collateral-wrap-permissionless",
+      "category": "polymarket-collateral",
+      "snapshot": "contracts/snapshots/CollateralOnramp",
+      "abi": "wrap(address _asset, address _to, uint256 _amount)",
+      "observedIn": []
+    },
+
+    "CollateralOfframp": {
+      "address": "0x2957922Eb93258b93368531d39fAcCA3B4dC5854",
+      "role": "collateral-unwrap-permissionless",
+      "category": "polymarket-collateral",
+      "snapshot": null,
+      "abi": "unwrap(address _asset, address _to, uint256 _amount)",
+      "observedIn": []
+    },
+
+    "PermissionedRamp": {
+      "address": "0xebC2459Ec962869ca4c0bd1E06368272732BCb08",
+      "role": "collateral-wrap-unwrap-witnessed",
+      "category": "polymarket-collateral",
+      "snapshot": "contracts/snapshots/PermissionedRamp",
+      "note": "EIP-712 witness-signed wrap/unwrap, used for permissioned off-/on-ramps",
+      "observedIn": []
+    },
+
+    "Vault": {
+      "address": "0xC417fD8E9661c0D2120B64A04BB3278C17E99DB1",
+      "role": "pusd-reserve-vault",
+      "category": "polymarket-collateral",
+      "snapshot": "contracts/snapshots/Vault",
+      "note": "Custodies USDC.e reserves backing pUSD. Pre-approved pUSD proxy to pull USDC.e on unwrap. Not in official docs — identified from on-chain trace in entry 0001, log 3.",
+      "observedIn": ["entries/0001-ctfexchangev2-mint"]
+    },
+
+    "CtfCollateralAdapter": {
+      "address": "0xADa100874d00e3331D00F2007a9c336a65009718",
+      "role": "collateral-bridge-standard",
+      "category": "polymarket-adapter",
+      "verifiedSource": "polygonscan",
+      "dependsOn": ["pUSD", "USDCe", "ConditionalTokens"],
+      "translates": "pUSD-denominated split/merge/redeem → USDC.e-denominated CTF calls",
+      "entrypoints": [
+        { "name": "splitPosition",   "selector": "0x72ce4275", "abi": "splitPosition(address,bytes32,bytes32,uint256[],uint256)" },
+        { "name": "mergePositions",  "selector": "0x9e7212ad", "abi": "mergePositions(address,bytes32,bytes32,uint256[],uint256)" },
+        { "name": "redeemPositions", "selector": null,          "abi": "redeemPositions(address,bytes32,bytes32,uint256[])" }
+      ],
+      "observedIn": ["entries/0001-ctfexchangev2-mint"]
+    },
+
+    "NegRiskCtfCollateralAdapter": {
+      "address": "0xAdA200001000ef00D07553cEE7006808F895c6F1",
+      "role": "collateral-bridge-negrisk",
+      "category": "polymarket-adapter",
+      "dependsOn": ["pUSD", "USDCe", "NegRiskAdapter"],
+      "observedIn": []
+    },
+
+    "NegRiskAdapter": {
+      "address": "0xd91E80cF2E7be2e162c6513ceD06f1dD0dA35296",
+      "role": "negrisk-positions",
+      "category": "polymarket-adapter",
+      "upstream": "contracts/upstream/neg-risk-ctf-adapter",
+      "note": "Issues neg-risk mutually-exclusive multi-outcome positions. Alternative to vanilla CTF binary split.",
+      "observedIn": []
+    },
+
+    "UmaCtfAdapter": {
+      "address": "0x6A9D222616C90FcA5754cd1333cFD9b7fb6a4F74",
+      "role": "resolution",
+      "category": "polymarket-resolution",
+      "upstream": "contracts/upstream/uma-ctf-adapter",
+      "note": "Reports outcomes from UMA's Optimistic Oracle into Gnosis CTF.",
+      "dependsOn": ["ConditionalTokens"],
+      "observedIn": []
+    },
+
+    "ConditionalTokens": {
+      "address": "0x4D97DCd97eC945f40cF65F87097ACe5EA0476045",
+      "role": "positions-ledger",
+      "category": "third-party",
+      "kind": "Gnosis @gnosis.pm/conditional-tokens-contracts",
+      "events": {
+        "TransferSingle":   { "topic0": "0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62", "signature": "TransferSingle(address,address,address,uint256,uint256)" },
+        "TransferBatch":    { "topic0": "0x4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb", "signature": "TransferBatch(address,address,address,uint256[],uint256[])" },
+        "PositionSplit":    { "topic0": "0x2e6bb91f8cbcda0c93623c54d0403a43514fabc40084ec96b6d5379a74786298", "signature": "PositionSplit(address,address,bytes32,bytes32,uint256[],uint256)" },
+        "PositionsMerge":   { "topic0": null, "signature": "PositionsMerge(address,address,bytes32,bytes32,uint256[],uint256)" },
+        "PayoutRedemption": { "topic0": null, "signature": "PayoutRedemption(address,address,bytes32,bytes32,uint256[],uint256)" }
+      },
+      "observedIn": ["entries/0001-ctfexchangev2-mint"]
+    },
+
+    "USDCe": {
+      "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+      "impl_at_block_85671485": "0xdd9185DB084f5C4fFf3b4f70e7bA62123b812226",
+      "role": "collateral-ctf-side",
+      "category": "third-party",
+      "kind": "Bridged USDC on Polygon PoS",
+      "decimals": 6,
+      "observedIn": ["entries/0001-ctfexchangev2-mint"]
+    },
+
+    "PolymarketProxyFactory": {
+      "address": "0xaB45c5A4B0c941a2F231C04C3f49182e1A254052",
+      "role": "wallet-factory",
+      "category": "polymarket-wallet",
+      "note": "CREATE2-deterministic proxy wallet factory; used for POLY_PROXY signature type.",
+      "observedIn": []
+    },
+
+    "GnosisSafeFactory": {
+      "address": "0xaacfeea03eb1561c4e67d661e40682bd20e3541b",
+      "role": "wallet-factory",
+      "category": "polymarket-wallet",
+      "note": "CREATE2-deterministic Gnosis Safe factory; used for POLY_GNOSIS_SAFE signature type. Taker order in entry 0001 used this path.",
+      "observedIn": ["entries/0001-ctfexchangev2-mint"]
+    }
+  },
+
+  "dependencyGraph": {
+    "edges": [
+      ["CTFExchangeV2", "pUSD",                 "collateral-transfer"],
+      ["CTFExchangeV2", "CtfCollateralAdapter", "split/merge/redeem-dispatch"],
+      ["CTFExchangeV2", "ConditionalTokens",    "ERC1155-transfer"],
+      ["CTFExchangeV2", "PolymarketProxyFactory","sig-verification (POLY_PROXY)"],
+      ["CTFExchangeV2", "GnosisSafeFactory",    "sig-verification (POLY_GNOSIS_SAFE)"],
+      ["NegRiskCTFExchangeV2", "NegRiskCtfCollateralAdapter", "split/merge/redeem-dispatch"],
+      ["NegRiskCTFExchangeV2", "NegRiskAdapter","positions-issuance"],
+      ["CtfCollateralAdapter", "pUSD",          "unwrap"],
+      ["CtfCollateralAdapter", "USDCe",         "transfer"],
+      ["CtfCollateralAdapter", "ConditionalTokens","splitPosition/mergePositions/redeemPositions"],
+      ["NegRiskCtfCollateralAdapter", "pUSD",   "unwrap"],
+      ["NegRiskCtfCollateralAdapter", "NegRiskAdapter","positions-issuance"],
+      ["pUSD",  "USDCe",                        "wrap/unwrap"],
+      ["pUSD",  "Vault",                        "reserve-custody"],
+      ["CollateralOnramp",   "pUSD",            "wrap"],
+      ["CollateralOfframp",  "pUSD",            "unwrap"],
+      ["PermissionedRamp",   "pUSD",            "wrap/unwrap (witnessed)"],
+      ["UmaCtfAdapter",      "ConditionalTokens","resolve"]
+    ]
+  },
+
+  "gaps": [
+    "getFeeReceiver() actual address — not yet observed",
+    "CollateralOfframp source snapshot — not yet captured",
+    "Vault source snapshot — not yet captured; undocumented in official docs",
+    "NegRiskCTFExchangeV2 event topics not yet fixed",
+    "CTFExchange V1 address — out of scope for v0.0.1 but needed before v1-to-v2-diff.md"
+  ]
+}
