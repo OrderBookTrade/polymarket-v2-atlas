@@ -4,3 +4,6 @@ out = "out"
 libs = ["lib", "contracts/upstream"]
 script = "script"
 test = "test"
+
+[etherscan]
+polygon = { key = "${POLYGONSCAN_API_KEY}" }
