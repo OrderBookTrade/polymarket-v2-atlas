@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.30;
 
 import "forge-std/Script.sol";
-import "neg-risk-ctf-adapter/NegRiskOperator.sol";
 
-contract TestCompile is Script {
+contract BaseScript is Script {
     function run() external {
        
     }
