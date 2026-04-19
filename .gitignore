@@ -11,4 +11,4 @@ broadcast/
 reports/
 
 # Dependencies
-contracts/upstream/forge-std/
+lib/forge-std/

@@ -18,7 +18,7 @@
       "role": "exchange-entry",
       "category": "polymarket-core",
       "upgradability": "non-upgradable",
-      "upstream": "contracts/upstream/ctf-exchange-v2",
+      "upstream": "lib/ctf-exchange-v2",
       "deployTx": "0xd313453c195344b3eea2d91343fb840e51130ba5562fb9c9eda83fd0f82c6c97",
       "deployer": "0xca71ea69c54c163d17beb90beb8d001e1eb538a1",
       "verifiedSource": "polygonscan",
@@ -73,7 +73,7 @@
       "role": "collateral-exchange-side",
       "category": "polymarket-collateral",
       "upgradability": "UUPS",
-      "upstream": "contracts/upstream/ctf-exchange-v2/src/collateral/CollateralToken.sol",
+      "upstream": "lib/ctf-exchange-v2/src/collateral/CollateralToken.sol",
       "decimals": 6,
       "symbol": "pUSD",
       "kind": "ERC20 wrapper over USDC/USDC.e",
@@ -88,7 +88,7 @@
       "address": "0x93070a847efEf7F70739046A929D47a521F5B8ee",
       "role": "collateral-wrap-permissionless",
       "category": "polymarket-collateral",
-      "upstream": "contracts/upstream/ctf-exchange-v2/src/collateral/CollateralOnramp.sol",
+      "upstream": "lib/ctf-exchange-v2/src/collateral/CollateralOnramp.sol",
       "abi": "wrap(address _asset, address _to, uint256 _amount)",
       "observedIn": []
     },
@@ -97,7 +97,7 @@
       "address": "0x2957922Eb93258b93368531d39fAcCA3B4dC5854",
       "role": "collateral-unwrap-permissionless",
       "category": "polymarket-collateral",
-      "upstream": "contracts/upstream/ctf-exchange-v2/src/collateral/CollateralOfframp.sol",
+      "upstream": "lib/ctf-exchange-v2/src/collateral/CollateralOfframp.sol",
       "abi": "unwrap(address _asset, address _to, uint256 _amount)",
       "observedIn": []
     },
@@ -106,7 +106,7 @@
       "address": "0xebC2459Ec962869ca4c0bd1E06368272732BCb08",
       "role": "collateral-wrap-unwrap-witnessed",
       "category": "polymarket-collateral",
-      "upstream": "contracts/upstream/ctf-exchange-v2/src/collateral/PermissionedRamp.sol",
+      "upstream": "lib/ctf-exchange-v2/src/collateral/PermissionedRamp.sol",
       "note": "EIP-712 witness-signed wrap/unwrap, used for permissioned off-/on-ramps",
       "observedIn": []
     },
@@ -115,7 +115,7 @@
       "address": "0xC417fD8E9661c0D2120B64A04BB3278C17E99DB1",
       "role": "pusd-reserve-vault",
       "category": "polymarket-collateral",
-      "upstream": "contracts/upstream/neg-risk-ctf-adapter/src/Vault.sol",
+      "upstream": "lib/neg-risk-ctf-adapter/src/Vault.sol",
       "note": "Custodies USDC.e reserves backing pUSD. Pre-approved pUSD proxy to pull USDC.e on unwrap. Not in official docs — identified from on-chain trace in entry 0001, log 3.",
       "observedIn": ["entries/0001-ctfexchangev2-mint"]
     },
@@ -147,7 +147,7 @@
       "address": "0xd91E80cF2E7be2e162c6513ceD06f1dD0dA35296",
       "role": "negrisk-positions",
       "category": "polymarket-adapter",
-      "upstream": "contracts/upstream/neg-risk-ctf-adapter",
+      "upstream": "lib/neg-risk-ctf-adapter",
       "note": "Issues neg-risk mutually-exclusive multi-outcome positions. Alternative to vanilla CTF binary split.",
       "observedIn": []
     },
@@ -156,7 +156,7 @@
       "address": "0x6A9D222616C90FcA5754cd1333cFD9b7fb6a4F74",
       "role": "resolution",
       "category": "polymarket-resolution",
-      "upstream": "contracts/upstream/uma-ctf-adapter",
+      "upstream": "lib/uma-ctf-adapter",
       "note": "Reports outcomes from UMA's Optimistic Oracle into Gnosis CTF.",
       "dependsOn": ["ConditionalTokens"],
       "observedIn": []

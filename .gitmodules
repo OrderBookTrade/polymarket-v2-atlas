@@ -1,9 +1,9 @@
 [submodule "contracts/upstream/ctf-exchange-v2"]
-	path = contracts/upstream/ctf-exchange-v2
+	path = lib/ctf-exchange-v2
 	url = https://github.com/Polymarket/ctf-exchange-v2.git
 [submodule "contracts/upstream/uma-ctf-adapter"]
-	path = contracts/upstream/uma-ctf-adapter
+	path = lib/uma-ctf-adapter
 	url = https://github.com/Polymarket/uma-ctf-adapter.git
 [submodule "contracts/upstream/neg-risk-ctf-adapter"]
-	path = contracts/upstream/neg-risk-ctf-adapter
+	path = lib/neg-risk-ctf-adapter
 	url = https://github.com/Polymarket/neg-risk-ctf-adapter.git
