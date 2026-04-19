@@ -6,22 +6,21 @@ transactions, not marketing material.
 
 ## Layout
 
-```
+```text
 polymarket-v2-atlas/
 ├── entries/                       # hand-decoded real transactions (the anchor)
 │   └── 0001-ctfexchangev2-mint/
-├── contracts/
-│   ├── upstream/                  # git submodules (Polymarket source of truth)
-│   │   ├── ctf-exchange-v2/
-│   │   ├── uma-ctf-adapter/
-│   │   └── neg-risk-ctf-adapter/
-│   └── snapshots/                 # Polygonscan verified source, pinned to a block
-│       ├── pUSD/
-│       ├── CollateralOnramp/
-│       ├── PermissionedRamp/
-│       └── Vault/
+├── lib/                           # git submodules (Polymarket source of truth)
+│   ├── ctf-exchange-v2/           # core exchange logic
+│   ├── uma-ctf-adapter/           # optimistic oracle resolution
+│   ├── neg-risk-ctf-adapter/      # mutually exclusive multi-outcome markets
+│   └── forge-std/                 # foundry standard library for scripting
 ├── registry/
 │   └── contracts.json             # addresses · roles · ABIs · dependency graph
+├── script/                        # executable Foundry scripts for live interaction
+│   ├── BaseScript.s.sol           # environment preparation & fork setup
+│   ├── ctf/                       # conditional tokens scripts
+│   └── pusd/                      # collateral scripts
 ├── annotations/
 │   ├── v1-to-v2-diff.md           # what changed for integrators
 │   ├── trust-boundaries.md        # who owns what, and what crosses the line
@@ -34,13 +33,12 @@ polymarket-v2-atlas/
 - **`entries/`** is the trunk. Every other directory grows out of it.
   A claim anywhere else in the repo should cite an entry (or be marked as a
   gap, see below).
-- **`contracts/upstream/`** gives you canonical solc-compilable source. Use
-  this for ABIs, struct layouts, type hashes.
-- **`contracts/snapshots/`** gives you bytecode-faithful source pinned to a
-  block, so we can detect upgrades/drift on the proxies Polymarket owns.
+- **`lib/`** gives you canonical solc-compilable source directly from Polymarket's upstream. Use
+  this for ABIs, struct layouts, type hashes, and scripting dependencies.
 - **`registry/contracts.json`** is the machine-readable index. Every
   contract the atlas touches lands here. It's the handshake between decoded
   entries and the future decoder.
+- **`script/`** connects the static atlas to the live chain through Foundry. These executable scripts validate behaviors against real network state.
 - **`annotations/`** is the human-readable commentary layer. Each file is
   *downstream* of observations — items land in an annotation *from* an
   entry's "Gotcha list" or "Trust boundaries crossed" section, not the
@@ -66,17 +64,24 @@ polymarket-v2-atlas/
   surfaced in-context inside each annotation. We don't paper over
   unknowns.
 
-## Working with submodules
+## Foundry Environment & Submodules
+
+This atlas is configured as a fully operational Foundry workspace to test live interactions.
 
 ```sh
-# first clone
+# 1. First clone (with all upstream contracts mapped into lib/)
 git clone --recurse-submodules <this-repo>
 
-# if you already cloned without --recurse-submodules
+# 2. If you already cloned without --recurse-submodules:
 git submodule update --init --recursive
 
-# pull upstream changes
-git submodule update --remote --merge
+# 3. Environment configuration
+cp .env.example .env
+# Fill in your PRVATE_KEY and POLYGON_RPC_URL
+
+# 4. Run scripts
+forge build
+forge script script/pusd/PUSDScript.s.sol --rpc-url $POLYGON_RPC_URL
 ```
 
 Upstream submodules are pinned to specific commits — bumping them is a
