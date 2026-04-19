@@ -7,11 +7,13 @@ import {console2} from "forge-std/console2.sol";
 import {CollateralToken} from "ctf-exchange-v2/collateral/CollateralToken.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {CollateralOnramp} from "ctf-exchange-v2/collateral/CollateralOnramp.sol";
+import {CollateralOfframp} from "ctf-exchange-v2/collateral/CollateralOfframp.sol";
 
 contract PUSDScript is BaseScript {
     address PUSD = 0xC011a7E12a19f7B1f670d46F03B03f3342E82DFB;
 
     address ONRAMP = 0x93070a847efEf7F70739046A929D47a521F5B8ee;
+    address OFFRAMP = 0x2957922Eb93258b93368531d39fAcCA3B4dC5854;
     address USDC = 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359;
     address USDCE = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;
 
@@ -25,6 +27,12 @@ contract PUSDScript is BaseScript {
 
         // 3.wrap
         // wrapToPUSD();
+
+        // 4. apporve PUSD to OFFRAMP
+        // approvePUSDToOfframp();
+
+        // 5. unwrap
+        unwrapPUSDToUSDC();
     }
 
     function getPusdConfig() public view {
@@ -55,6 +63,20 @@ contract PUSDScript is BaseScript {
         uint256 amount = 0.1e6;
         onramp.wrap(USDCE, user_address, amount);
     }
+
+    // Approve PUSD to OFFRAMP
+    function approvePUSDToOfframp() public {
+        ERC20(PUSD).approve(OFFRAMP, 100e6);
+    }
+
+    //forge script script/pusd/PUSDScript.s.sol -vvvv --broadcast --with-gas-price 1000gwei --priority-gas-price 1000gwei
+
+    function unwrapPUSDToUSDC() public {
+        CollateralOfframp offramp = CollateralOfframp(OFFRAMP);
+        uint256 amount = 0.1e6;
+        offramp.unwrap(USDCE, user_address, amount);
+    }
+
     // https://docs.polymarket.com/concepts/pusd#example
 
     // const wrapHash = await walletClient.writeContract({

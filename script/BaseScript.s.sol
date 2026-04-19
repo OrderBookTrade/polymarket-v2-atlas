@@ -4,8 +4,8 @@ pragma solidity ^0.8.30;
 import "forge-std/Script.sol";
 
 contract BaseScript is Script {
-
     address user_address;
+
     function setUp() public virtual {
         vm.createSelectFork(vm.envString("POLYGON_RPC_URL"));
 
