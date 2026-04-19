@@ -32,7 +32,11 @@ contract PUSDScript is BaseScript {
         // approvePUSDToOfframp();
 
         // 5. unwrap
-        unwrapPUSDToUSDC();
+        // unwrapPUSDToUSDC();
+
+        // 6. pusd transfer
+        PUSDTransfertoSafe();
+
     }
 
     function getPusdConfig() public view {
@@ -86,4 +90,11 @@ contract PUSDScript is BaseScript {
     //   args: [USDCE, account.address, amount],
     // });
     // await publicClient.waitForTransactionReceipt({ hash: wrapHash });
+
+
+    function PUSDTransfertoSafe() public {
+        // change this to safe wallet address
+        address safeWalletAddress = user_address;   
+        ERC20(PUSD).transfer(safeWalletAddress, 2e6);
+    }
 }
