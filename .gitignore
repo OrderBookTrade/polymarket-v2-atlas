@@ -1,3 +1,14 @@
+# Environment
 .env
-
 .claude/
+
+# Foundry build artifacts
+cache/
+out/
+
+# Foundry script execution/deployment artifacts
+broadcast/
+reports/
+
+# Dependencies
+contracts/upstream/forge-std/
