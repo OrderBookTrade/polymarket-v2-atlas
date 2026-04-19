@@ -73,7 +73,7 @@
       "role": "collateral-exchange-side",
       "category": "polymarket-collateral",
       "upgradability": "UUPS",
-      "snapshot": "contracts/snapshots/pUSD",
+      "upstream": "contracts/upstream/ctf-exchange-v2/src/collateral/CollateralToken.sol",
       "decimals": 6,
       "symbol": "pUSD",
       "kind": "ERC20 wrapper over USDC/USDC.e",
@@ -88,7 +88,7 @@
       "address": "0x93070a847efEf7F70739046A929D47a521F5B8ee",
       "role": "collateral-wrap-permissionless",
       "category": "polymarket-collateral",
-      "snapshot": "contracts/snapshots/CollateralOnramp",
+      "upstream": "contracts/upstream/ctf-exchange-v2/src/collateral/CollateralOnramp.sol",
       "abi": "wrap(address _asset, address _to, uint256 _amount)",
       "observedIn": []
     },
@@ -97,7 +97,7 @@
       "address": "0x2957922Eb93258b93368531d39fAcCA3B4dC5854",
       "role": "collateral-unwrap-permissionless",
       "category": "polymarket-collateral",
-      "snapshot": null,
+      "upstream": "contracts/upstream/ctf-exchange-v2/src/collateral/CollateralOfframp.sol",
       "abi": "unwrap(address _asset, address _to, uint256 _amount)",
       "observedIn": []
     },
@@ -106,7 +106,7 @@
       "address": "0xebC2459Ec962869ca4c0bd1E06368272732BCb08",
       "role": "collateral-wrap-unwrap-witnessed",
       "category": "polymarket-collateral",
-      "snapshot": "contracts/snapshots/PermissionedRamp",
+      "upstream": "contracts/upstream/ctf-exchange-v2/src/collateral/PermissionedRamp.sol",
       "note": "EIP-712 witness-signed wrap/unwrap, used for permissioned off-/on-ramps",
       "observedIn": []
     },
@@ -115,7 +115,7 @@
       "address": "0xC417fD8E9661c0D2120B64A04BB3278C17E99DB1",
       "role": "pusd-reserve-vault",
       "category": "polymarket-collateral",
-      "snapshot": "contracts/snapshots/Vault",
+      "upstream": "contracts/upstream/neg-risk-ctf-adapter/src/Vault.sol",
       "note": "Custodies USDC.e reserves backing pUSD. Pre-approved pUSD proxy to pull USDC.e on unwrap. Not in official docs — identified from on-chain trace in entry 0001, log 3.",
       "observedIn": ["entries/0001-ctfexchangev2-mint"]
     },
@@ -229,8 +229,6 @@
 
   "gaps": [
     "getFeeReceiver() actual address — not yet observed",
-    "CollateralOfframp source snapshot — not yet captured",
-    "Vault source snapshot — not yet captured; undocumented in official docs",
     "NegRiskCTFExchangeV2 event topics not yet fixed",
     "CTFExchange V1 address — out of scope for v0.0.1 but needed before v1-to-v2-diff.md"
   ]
