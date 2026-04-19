@@ -24,7 +24,7 @@ contract PUSDScript is BaseScript {
         // approveUSDCEToOnramp();
 
         // 3.wrap
-        wrapToPUSD();
+        // wrapToPUSD();
     }
 
     function getPusdConfig() public view {
@@ -52,10 +52,8 @@ contract PUSDScript is BaseScript {
     function wrapToPUSD() public {
         CollateralOnramp onramp = CollateralOnramp(ONRAMP);
 
-        uint256 privateKey = vm.envUint("PRIVATE_KEY");
-        address user = vm.addr(privateKey);
         uint256 amount = 0.1e6;
-        onramp.wrap(USDCE, user, amount);
+        onramp.wrap(USDCE, user_address, amount);
     }
     // https://docs.polymarket.com/concepts/pusd#example
 
