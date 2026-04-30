@@ -17,6 +17,8 @@ contract PUSDScript is BaseScript {
     address USDC = 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359;
     address USDCE = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;
 
+    address V2Exchange = 0xE111180000d2663C0091e4f400237545B87B996B;
+
     function run() external {
         // 1. get PUSD config
         // getPusdConfig();
@@ -35,8 +37,11 @@ contract PUSDScript is BaseScript {
         // unwrapPUSDToUSDC();
 
         // 6. pusd transfer
-        PUSDTransfertoSafe();
+        // PUSDTransfertoSafe();
 
+        // 7.allownace
+        // uint256 allownce = ERC20(PUSD).allowance(user_address, V2Exchange);
+        // console2.log("allownce", allownce);
     }
 
     function getPusdConfig() public view {
@@ -65,7 +70,7 @@ contract PUSDScript is BaseScript {
         CollateralOnramp onramp = CollateralOnramp(ONRAMP);
 
         uint256 amount = 0.1e6;
-        onramp.wrap(USDCE, user_address, amount);
+        onramp.wrap(USDC, user_address, amount);
     }
 
     // Approve PUSD to OFFRAMP
@@ -77,7 +82,9 @@ contract PUSDScript is BaseScript {
 
     function unwrapPUSDToUSDC() public {
         CollateralOfframp offramp = CollateralOfframp(OFFRAMP);
-        uint256 amount = 0.1e6;
+        uint256 amount = ERC20(PUSD).balanceOf(user_address);
+
+
         offramp.unwrap(USDCE, user_address, amount);
     }
 
@@ -91,10 +98,9 @@ contract PUSDScript is BaseScript {
     // });
     // await publicClient.waitForTransactionReceipt({ hash: wrapHash });
 
-
     function PUSDTransfertoSafe() public {
         // change this to safe wallet address
-        address safeWalletAddress = user_address;   
+        address safeWalletAddress = user_address;
         ERC20(PUSD).transfer(safeWalletAddress, 2e6);
     }
 }
