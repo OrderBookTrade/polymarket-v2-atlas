@@ -31,10 +31,10 @@ contract PUSDScript is BaseScript {
         // wrapToPUSD();
 
         // 4. apporve PUSD to OFFRAMP
-        // approvePUSDToOfframp();
+        approvePUSDToOfframp();
 
         // 5. unwrap
-        // unwrapPUSDToUSDC();
+        unwrapPUSDToUSDC();
 
         // 6. pusd transfer
         // PUSDTransfertoSafe();
@@ -75,7 +75,7 @@ contract PUSDScript is BaseScript {
 
     // Approve PUSD to OFFRAMP
     function approvePUSDToOfframp() public {
-        ERC20(PUSD).approve(OFFRAMP, 100e6);
+        ERC20(PUSD).approve(OFFRAMP, 300e6);
     }
 
     //forge script script/pusd/PUSDScript.s.sol -vvvv --broadcast --with-gas-price 1000gwei --priority-gas-price 1000gwei
@@ -84,6 +84,8 @@ contract PUSDScript is BaseScript {
         CollateralOfframp offramp = CollateralOfframp(OFFRAMP);
         uint256 amount = ERC20(PUSD).balanceOf(user_address);
 
+        console2.log("user_address", user_address);
+        console2.log("PUSD balance ", amount);
 
         offramp.unwrap(USDCE, user_address, amount);
     }
